@@ -1,0 +1,73 @@
+﻿@model ExamenPráctico.Models.ClientModel
+@{
+    ViewBag.Title = "AddUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card">
+    <div class="card-heading">
+        <h2 class="font-thin">Agregar Usuario</h2>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-body">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "postForm", enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ClientName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ClientName, new { @class = "form-control", style = "max-width: 100%;" })
+                    @Html.ValidationMessageFor(m => m.ClientName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ClientLastName1, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ClientLastName1, new { @class = "form-control", style = "max-width: 100%; resize: vertical", rows = 5 })
+                    @Html.ValidationMessageFor(m => m.ClientLastName1)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ClientLastName2, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ClientLastName2, new { @class = "form-control", style = "max-width: 100%; resize: vertical", rows = 5 })
+                    @Html.ValidationMessageFor(m => m.ClientLastName1)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href='@Url.Action("Users")' class="btn btn-default btn-cancel">Cancelar</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#postForm').data('validator').settings.submitHandler = function (form) {
+            $('#loadingModal').show();
+            let formData = new FormData(form);
+            $.ajax({
+                url: form.action,
+                method: form.method,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (+response.Response.ReturnCode === 200) {
+                        window.location = $('.btn-cancel').attr('href');
+                    } else {
+                        $('#loadingModal').hide();
+                        bootbox.alert(response.Response.ReturnMessage);
+                    }
+                },
+                error: function (error) {
+                    $('#loadingModal').hide();
+                    bootbox.alert('No se ha podido conectar con el servidor');
+                }
+            });
+        }
+    })
+</script>

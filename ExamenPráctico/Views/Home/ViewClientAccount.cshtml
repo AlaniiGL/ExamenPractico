@@ -1,0 +1,68 @@
+﻿@model List<ExamenPráctico.Models.ShowAccountDetailsModel>
+@{
+    ViewBag.Title = "ViewClientAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-heading">
+        <h2 class="font-thin">Lista de Cuentas del Usuario</h2>
+    </div>
+    <div class="card-body b-b b-light">
+        <div class="row">
+            <div class="col-md-6">
+                <input id="filter" placeholder="Buscar" type="text" class="form-control input-sm w-auto inline m-r" />
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table" ui-jp="footable" data-filter="#filter" data-page-size="50">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Id</th>
+                    <th style="text-align: center;">Nombre(s)</th>
+                    <th style="text-align: center;">Apellido Paterno</th>
+                    <th style="text-align: center;">Apellido Materno</th>
+                    <th style="text-align: center;">Fecha y Hora de Apertura</th>
+                    <th style="text-align: center;">Acciones</th>
+                    <th data-sort-ignore="true"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @foreach (var item in Model)
+                    {
+                        <td style="text-align: center;">@item.Id_Account</td>
+                        <td style="text-align: center;">@item.ClientName</td>
+                        <td style="text-align: center;">@item.ClientLastName1</td>
+                        <td style="text-align: center;">@item.ClientLastName2</td>
+                        <td style="text-align: center;">@item.AccountCreateDate</td>
+                        <td style="text-align: center">
+                            <a href='@Url.Action("EditAccount", new {id = item.Id_Client, account = item.Id_Account, transaction = 1})' class="btn btn-default" data-toggle="tooltip" data-title="Depósito" style="width: 40px;">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                            <a href='@Url.Action("EditAccount", new {id = item.Id_Client, account = item.Id_Account, transaction = 2})' class="btn btn-default" data-toggle="tooltip" data-title="Retiro" style="width: 40px;">
+                                <span class="glyphicon glyphicon-minus"></span>
+                            </a>
+                        </td>
+                    }
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#filter').on('keydown', function (e) {
+            if (e.which === 13 || e.keyCode === 13 || e.key === 'Enter' ) {
+                window.location = '@Url.Action("Users")?' + $('#filterForm').serialize();
+            }
+        });
+
+        $('#filter').on('input', function (e) {
+            $('#SearchQuery').val($(this).val());
+        });
+    })
+</script>

@@ -1,0 +1,75 @@
+﻿@using PagedList.Mvc
+@model ExamenPráctico.Models.ClientViewModel
+@{
+    ViewBag.Title = "Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.Partial("_Loading")
+<div class="card">
+    <div class="card-heading">
+        <h2 class="font-thin">Lista de Usuarios</h2>
+    </div>
+    <div class="card-body b-b b-light">
+        <div class="row">
+            <div class="col-md-6">
+                <input id="filter" placeholder="Buscar" type="text" class="form-control input-sm w-auto inline m-r" />
+            </div>
+            <div class="col-md-6" style="text-align: right">
+                <a href="@Url.Action("AddUser")" class="btn btn-primary">Agregar</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table" ui-jp="footable" data-filter="#filter" data-page-size="50">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Id</th>
+                    <th style="text-align: center;">Nombre</th>
+                    <th style="text-align: center;">Apellido Paterno</th>
+                    <th style="text-align: center;">Apellido Materno</th>
+                    <th data-sort-ignore="true"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ClientModelList)
+                {
+                    <tr>
+                        <td style="text-align: center;">@item.Id_Client</td>
+                        <td style="text-align: center;">@item.ClientName</td>
+                        <td style="text-align: center;">@item.ClientLastName1</td>
+                        <td style="text-align: center;">@item.ClientLastName2</td>
+                        <td style="text-align: right">
+                            <a href='@Url.Action("CreateSavingAccount", new {id = item.Id_Client})' class="btn btn-default" data-toggle="tooltip" data-title="Añadir Cuenta" style="width: 40px;">
+                                <i class="glyphicon glyphicon-book"></i>
+                            </a>
+                            <a href='@Url.Action("ViewClientAccount", new {id = item.Id_Client})' class="btn btn-default" data-toggle="tooltip" data-title="Movimientos de Cuenta" style="width: 40px;">
+                                <span class="glyphicon glyphicon-credit-card"></span>
+                            </a>
+                            <a href='@Url.Action("ShowTransactions", new {id = item.Id_Client})' class="btn btn-default" data-toggle="tooltip" data-title="Movimientos de Cuenta" style="width: 40px;">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#filter').on('keydown', function (e) {
+            if (e.which === 13 || e.keyCode === 13 || e.key === 'Enter' ) {
+                window.location = '@Url.Action("Users")?' + $('#filterForm').serialize();
+            }
+        });
+
+        $('#filter').on('input', function (e) {
+            $('#SearchQuery').val($(this).val());
+        });
+
+    })
+</script>

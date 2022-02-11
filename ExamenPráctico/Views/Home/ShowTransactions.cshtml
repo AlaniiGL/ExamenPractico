@@ -1,0 +1,53 @@
+﻿@model ExamenPráctico.Models.TransactionViewModel
+@{
+    ViewBag.Title = "ShowTransactions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Loading")
+<div class="card">
+    @if (Model.IsCustom)
+    {
+        <div class="card-heading">
+            <h2 class="font-thin">Lista de Transacciones Hechas por el Usuario @Model.Client.ClientName</h2>
+        </div>
+    }
+
+    else
+    {
+        <div class="card-heading">
+            <h2 class="font-thin">Lista de Transacciones</h2>
+        </div>
+    }
+
+    <div class="card-body">
+        <table class="table" ui-jp="footable" data-filter="#filter" data-page-size="50">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Transacción #</th>
+                    <th style="text-align: center;">Nombre</th>
+                    <th style="text-align: center;">Acción Realizada</th>
+                    <th style="text-align: center;">Cantidad de Transferencia</th>
+                    <th style="text-align: center;">Balance Previo</th>
+                    <th style="text-align: center;">Balance Posterior</th>
+                    <th style="text-align: center;">Fecha de la Transacción</th>
+                    <th data-sort-ignore="true"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.transactionList)
+                {
+                    <tr>
+                        <td style="text-align: center;">@item.Id_Transaction</td>
+                        <td style="text-align: center;">@item.FullName</td>
+                        <td style="text-align: center;">@item.TransactionName</td>
+                        <td style="text-align: center;">@item.Transaction_Quantity</td>
+                        <td style="text-align: center;">@item.Previous_Balance</td>
+                        <td style="text-align: center;">@item.Subsecuent_Balance</td>
+                        <td style="text-align: center;">@item.Transaction_Date</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

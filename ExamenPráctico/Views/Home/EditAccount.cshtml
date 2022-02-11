@@ -1,0 +1,117 @@
+﻿@using ExamenPráctico.Helpers
+@model ExamenPráctico.Models.ShowAccountDetailsModel
+@{
+    ViewBag.Title = "EditAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-heading">
+        <h2 class="font-thin">@Model.TransactionKind de Dinero</h2>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-body">
+        <div class="card-body b-b b-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <input id="filter" placeholder="Buscar" type="text" class="form-control input-sm w-auto inline m-r" />
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table" ui-jp="footable" data-filter="#filter" data-page-size="50">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Fecha de Creación de la Cuenta</th>
+                        <th>Saldo</th>
+                        <th data-sort-ignore="true"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @Model.Id_Account
+                        </td>
+                        <td>
+                            @Model.ClientName
+                        </td>
+                        <td>
+                            @Model.ClientLastName1
+                        </td>
+                        <td>
+                            @Model.ClientLastName2
+                        </td>
+                        <td>
+                            @Model.AccountCreateDate
+                        </td>
+                        <td>
+                            @Model.Account_Balance
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "postForm", enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+
+            @Html.HiddenFor(m => m.Id_Client)
+            @Html.HiddenFor(m => m.Id_Account)
+            @Html.HiddenFor(m => m.ClientName)
+            @Html.HiddenFor(m => m.ClientLastName1)
+            @Html.HiddenFor(m => m.ClientLastName2)
+            @Html.HiddenFor(m => m.AccountCreateDate)
+            @Html.HiddenFor(m => m.Account_Balance)
+            @Html.HiddenFor(m => m.Transaction)
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.TransactionAmount, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.TransactionAmount, new { @class = "form-control", style = "max-width: 100%; resize: vertical", rows = 5 })
+                    @Html.ValidationMessageFor(m => m.TransactionAmount)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href='@Url.Action("ViewClientAccount", new { id = Model.Id_Client })' class="btn btn-default btn-cancel">Cancelar</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#postForm').data('validator').settings.submitHandler = function (form) {
+            $('#loadingModal').show();
+            let formData = new FormData(form);
+            $.ajax({
+                url: form.action,
+                method: form.method,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (+response.Response.ReturnCode === 200) {
+                        window.location = $('.btn-cancel').attr('href');
+                    } else {
+                        $('#loadingModal').hide();
+                        bootbox.alert(response.Response.ReturnMessage);
+                    }
+                },
+                error: function (error) {
+                    $('#loadingModal').hide();
+                    bootbox.alert('No se ha podido conectar con el servidor');
+                }
+            });
+        }
+    })
+</script>
